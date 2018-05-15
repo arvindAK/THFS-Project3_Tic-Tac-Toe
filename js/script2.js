@@ -15,8 +15,9 @@
 
 function startGame(){
 	document.querySelector('#start').hidden=true;
-	document.querySelector('#finish').hidden=true;
 	document.querySelector('.board').hidden=false;
+	const finishPage = document.querySelector('#finish');
+	if(finishPage) finishPage.parentElement.removeChild(finishPage);
 	switchProperties(player2, player1, 1);
 	boxList.forEach(box => {
 		removeClass(box, 'box-filled-1');
@@ -75,9 +76,17 @@ function turnClick(e){
 
 function nextStep(squareId, player) {
 	origBoard[squareId] = player;
-	//console.log(origBoard);
 	let gameWon = checkWin(origBoard, player)
-	if (gameWon) gameOver(gameWon)
+	gameWon ? gameOver(gameWon) : checkTie(origBoard);
+};
+
+function checkTie(board){
+	const freeBoardPositions = board.filter(i=> typeof i === 'number');
+	if(freeBoardPositions==0){
+		gameDraw = {player: NaN};
+		console.log('calling gameOverFunction')
+		gameOver(gameDraw);
+	}
 }
 
 function checkWin(board, player) {
@@ -109,14 +118,6 @@ function switchProperties(pastPlayer, presentPlayer, presentPlayerNum){
 
 function gameOver(gameWon) {
 	document.querySelector('.board').hidden=true;
-	let winner;
-	const finishPage = document.querySelector('#finish');
-	gameWon.player === 'box-filled-1' ? addClass(finishPage, 'screen-win-one') :
-	addClass(finishPage, 'screen-win-two');
-	finishPage.hidden = false;
-}
-
-(function endPage(){
 	const someHtml = `
 	<div class="screen screen-win" id="finish">
 		<head>
@@ -129,8 +130,17 @@ function gameOver(gameWon) {
 		</header>
 	</div>`
 	document.body.insertAdjacentHTML('afterbegin', someHtml);
-	document.querySelector('#finish').hidden=true;
-})()
+	const finishPage = document.querySelector('#finish');
+	if(gameWon.player === 'box-filled-1'){
+		addClass(finishPage, 'screen-win-one')
+	} else if(gameWon.player === 'box-filled-2'){
+		addClass(finishPage, 'screen-win-two');
+	} else {
+		addClass(finishPage, 'screen-win-tie');
+		//removeClass(finishPage, '.screen-win');
+	};
+}
+
 /* =============================================================================
                             CSS Classes
 ============================================================================= */
