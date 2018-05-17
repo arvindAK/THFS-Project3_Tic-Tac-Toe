@@ -7,35 +7,72 @@
 	  </head>
 	  <header>
 	  	<h1>Tic Tac Toe</h1>
+			<div id='ai' class='start-input'>
+				<label>
+					<input type='checkbox' id='aiinput' onChange='changeHandler()'> Play against AI?
+				</label>
+			</div>
+			<div id='player-names' class='start-input'>
+				<input type='text' id='player1name' placeholder='Player #1 Name'>
+				<input type='text' id='player2name' placeholder='Player #2 Name'>
+			</div>
 	    <a href="#" onClick='startGame()' class="button">Start game</a>
 	  </header>
-	</div>`
+	</div>`;
 	document.body.insertAdjacentHTML('afterbegin', someHtml);
 })();
 
+(function addNameSpan(){
+	const someHtml = `<span class ='nameSection' id = 'player-1-name'></span>
+										<span class ='nameSection' id = 'player-2-name'></span>`;
+document.querySelector('#player1').parentElement.insertAdjacentHTML('afterend', someHtml)
+
+})();
 function startGame(){
+	const player1nameValue = document.querySelector('#player1name').value;
+	const player2nameValue = document.querySelector('#player2name').value;
+	const ifAI = document.querySelector('#aiinput').checked;
+	if(ifAI){
+		document.querySelector('#player-1-name').innerHTML = player1nameValue;
+		document.querySelector('#player-2-name').innerHTML = 'AI';
+
+	} else{
+		document.querySelector('#player-1-name').innerHTML = player1nameValue;
+		document.querySelector('#player-2-name').innerHTML = player2nameValue;
+	}
 	document.querySelector('#start').hidden=true;
 	document.querySelector('.board').hidden=false;
 	const finishPage = document.querySelector('#finish');
 	if(finishPage) finishPage.parentElement.removeChild(finishPage);
-	switchProperties(player2, player1, 1);
+
 	boxList.forEach(box => {
 		removeClass(box, 'box-filled-1');
 		removeClass(box, 'box-filled-2');
 	});
 	origBoard = Array.from(Array(9).keys());
-	symbol = 'img/o.svg';
+	randomStart();
 }
 
-let turn = 'box-filled-1';
-let symbol = 'img/o.svg';
-let origBoard = Array.from(Array(9).keys());
+function changeHandler(){
+	const ifAI = document.querySelector('#aiinput').checked;
+	const player2name = document.querySelector('#player2name');
+	ifAI ? player2name.hidden=true : player2name.hidden=false;
+}
 
+function randomStart(){
+	let randomNumber = Math.floor(Math.random() * 2) + 1;
+	switchProperties(randomNumber);
+	turn === 'box-filled-1' ? symbol = 'img/o.svg' : symbol = 'img/x.svg';
+}
+
+let symbol;
+let turn;
+let origBoard;
 const player1 = document.getElementById('player1');
 const player2 = document.getElementById('player2');
 
+
 const boxList = document.querySelectorAll('.box');
-const boxes = document.querySelector('.boxes');
 
 //add an id that correlates with the index of the boxes
 boxList.forEach((box, i) => box.id = i);
@@ -52,6 +89,8 @@ const winCombos = [
   [6,4,2]
 ];
 
+const boxes = document.querySelector('.boxes');
+
 boxes.addEventListener('mouseover', function addImage(e){
 	if(!hasClass(e.target, 'box-filled-1') && !hasClass(e.target, 'box-filled-2'))
 		e.target.style.backgroundImage = `url(${symbol})`;
@@ -66,12 +105,12 @@ boxes.addEventListener('click', function nextMove(e){
 		addClass(e.target, turn);
 		turnClick(e);
 		switchTurn();
-
 	}
 });
 
 function turnClick(e){
 	nextStep(e.target.id, turn)
+	if(turn ===)
 }
 
 function nextStep(squareId, player) {
@@ -103,17 +142,27 @@ function checkWin(board, player) {
 function switchTurn(){
 	if(turn === 'box-filled-1'){
 		symbol = 'img/x.svg';
-		switchProperties(player1, player2, 2)
+		switchProperties(2)
 	} else{
 		symbol = 'img/o.svg';
-		switchProperties(player2, player1, 1)
+		switchProperties(1)
 	}
 };
 
-function switchProperties(pastPlayer, presentPlayer, presentPlayerNum){
-	removeClass(pastPlayer, 'active')
-	addClass(presentPlayer,'active')
+function switchProperties(presentPlayerNum){
+
 	turn = `box-filled-${presentPlayerNum}`;
+	if(presentPlayerNum === 1){
+		document.querySelector('#player-1-name').style.color = '';
+		document.querySelector('#player-2-name').style.color = 'grey';
+		removeClass(player2, 'active')
+		addClass(player1,'active')
+	} else{
+		document.querySelector('#player-1-name').style.color = 'grey';
+		document.querySelector('#player-2-name').style.color = '';
+		removeClass(player1, 'active')
+		addClass(player2,'active')
+	}
 }
 
 function gameOver(gameWon) {
@@ -125,24 +174,27 @@ function gameOver(gameWon) {
 		</head>
 		<header>
 			<h1>Tic Tac Toe</h1>
-			<p class="message"></p>
+			<p class="message">Winner!</p>
 			<a href="#" onClick='startGame()' class="button">New game</a>
 		</header>
 	</div>`
 	document.body.insertAdjacentHTML('afterbegin', someHtml);
 	const finishPage = document.querySelector('#finish');
+	let message = document.querySelector('.message');
 	if(gameWon.player === 'box-filled-1'){
-		addClass(finishPage, 'screen-win-one')
+		addClass(finishPage, 'screen-win-one');
+		message.innerHTML = `${document.querySelector('#player1name').value} Wins!`
 	} else if(gameWon.player === 'box-filled-2'){
 		addClass(finishPage, 'screen-win-two');
+		message.innerHTML = `${document.querySelector('#player2name').value} Wins!`;
 	} else {
 		addClass(finishPage, 'screen-win-tie');
-		//removeClass(finishPage, '.screen-win');
-	};
-}
+		messageHTML.innerHTML = "It's a Tie!";
+	}
+};
 
 /* =============================================================================
-                            CSS Classes
+                            CSS classes helper functions
 ============================================================================= */
 function hasClass(el, className) {
   if (el.classList)

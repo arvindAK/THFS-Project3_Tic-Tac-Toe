@@ -111,6 +111,12 @@ h1 {
   #player2.active {
     background: #3688C3; }
 
+  #player1.active::after{
+
+  }
+
+
+
 .boxes {
   width: 480px;
   margin: 3em auto 0; }
@@ -141,11 +147,33 @@ h1 {
 /* =============================================================================
                             Custom styles
 ============================================================================= */
-.fg {
+#player-names input:first-child{
+  margin: 25px;
+}
+#player-names input{
+  font-size: 20px;
+  border-radius: 15px;
+  border: 1px solid #D6D9DC;
+  border-radius: 3px;
+  padding: 7px;
+}
 
-    /* Center and scale the image nicely */
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    z-index: 100;
+.start-input{
+  padding: 30px;
+}
+
+.start-input label{
+  font-size: 20px;
+}
+
+.nameSection{
+  font-size: 40px;
+  text-align: center;
+  padding: 30px;
+  position: relative;
+  display: inline-block;
+}
+
+#player-2-name{
+  float: right;
 }
